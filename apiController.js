@@ -5,8 +5,8 @@ const jwt = require('jsonwebtoken')
 const prisma = new PrismaClient()
 const {JwtUser} = prisma
 
-const genToken = (id,name)=>{
-    const payload ={id,name}
+const genToken = (id, role)=>{
+    const payload ={id, role}
     return jwt.sign(payload, process.env.SECRET, {expiresIn:"12h"})
 }
 
@@ -43,7 +43,7 @@ class ApiController{
             const validPswd = bcrypt.compareSync(pswd, dbUser.pswd)
             if(!validPswd) return res.status(400).json({msg: 'Введен неверный пароль'})
             else {
-                const token = genToken(dbUser.id, dbUser.name)
+                const token = genToken(dbUser.id, dbUser.role)
                 res.json({token})
             }
 
